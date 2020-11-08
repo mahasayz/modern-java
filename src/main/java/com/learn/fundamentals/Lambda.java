@@ -1,8 +1,10 @@
 package com.learn.fundamentals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 enum Color {
     RED, GREEN;
@@ -11,6 +13,7 @@ enum Color {
 class Apple {
     private int weight;
     private Color color;
+    public Apple(int weight) { this.weight = weight; }
     public Apple(int weight, Color color) {
         this.weight = weight;
         this.color = color;
@@ -33,6 +36,13 @@ public class Lambda {
     public static void printApples(List<Apple> apples) {
         for (Apple apple : apples)
             System.out.println(apple);
+    }
+
+    public static List<Apple> map(List<Integer> weights, Function<Integer, Apple> f) {
+        List<Apple> apples = new ArrayList<>();
+        for (int weight : weights)
+            apples.add(f.apply(weight));
+        return apples;
     }
 
     public static void main(String[] args) {
@@ -60,6 +70,11 @@ public class Lambda {
 
         System.out.println("=== DESCENDING ORDER ===");
         printApples(apples);
+
+        // method references on constructor
+        List<Integer> weights = Arrays.asList(50, 55, 150, 165, 85, 95);
+        List<Apple> otherApples = map(weights, Apple::new);
+        printApples(otherApples);
     }
 
 }
