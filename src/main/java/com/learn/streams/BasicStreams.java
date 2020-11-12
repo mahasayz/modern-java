@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class Dish {
     private final String name;
@@ -81,6 +82,31 @@ public class BasicStreams<T> {
                         .collect(Collectors.toList())
         );
 
+        /*
+         * Problem Statement: find unique characters in a list of words
+         */
+
+        List<String> words = Arrays.asList("Hello", "World");
+
+        words.stream()
+                .map(word -> word.split(""))
+                .flatMap(Arrays::stream)    // convert array to stream
+                .distinct()
+                .forEach(System.out::println);
+
+        IntStream.range(1, 6)
+                .map(x -> x * x)
+                .forEach(System.out::println);
+
+        List<Integer> one = Arrays.asList(1,2,3);
+        List<Integer> two = Arrays.asList(3,4);
+
+        one.stream()
+                .flatMap(a -> two.stream()
+                        .map(b -> new int[]{a,b})
+                )
+                .filter(arr -> (arr[0] + arr[1]) % 3 == 0)
+                .forEach(x -> System.out.println(Arrays.toString(x)));
     }
 
 }

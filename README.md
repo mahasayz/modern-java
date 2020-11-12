@@ -65,3 +65,35 @@ inventory.sort(comparing(Apple::getWeight));
     Function<Integer, Integer> h = f.andThen(g);      // also written as f.compose(g)
     int result = h.apply(1);
     ```
+  
+* collectors mainly offer 3 functionalities:
+    * reduce/summarize stream to single value
+    * group elements
+    * partition elements
+    
+<h4>Threads</h4>
+
+* parallel stream splits its elements into chunks and processes each chunk with a different thread
+    * parallel streams internally use `ForkJoinPool` which by default has as many threads as number of processors `Runtime.getRuntime().availableProcessors()`
+    * but you can change the size of the pool as follows
+    ```java
+    System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");
+    ```
+* Java benchmarking library - Java Microbenchmark Harness (JMH)
+
+* using parallel streams on `Stream.iterate()` is extremely slow in comparison to iterative process because:
+    * `iterate` generates boxed objects
+    * `iterate` is difficult to divide as the input of one function is the result of previous one
+* if you look at the `parallelSum()` example it shows why parallel programming is tricky and counterintuitive
+* So, insteead of `Stream.iterate` should use `LongStream` as there is not boxing/unboxing and the stream is generated first before use
+
+> Caveats of Parallelization: Parallelizaton process includes partition stream, assign substream to thread, and combine results to single value.
+> Moving data between multiple cores is very expensive, so we should choose tasks for parallelization which take longer to compute than to move data. 
+
+**Fork/Join Framework**
+* designed to recursively split parallelizable task into smaller tasks and then combine to produce overall result
+* implementation of `ExecutorService` interface - which distributes subtasks to worker threads in thread pool `ForkJoinPool`
+    * example shown in code
+* real-life code, use `ForkJoinPool` just once and keep it in static field, making it singleton
+* total threads in pool = num of processors + virtual processors provided by **hyperthreading**
+
